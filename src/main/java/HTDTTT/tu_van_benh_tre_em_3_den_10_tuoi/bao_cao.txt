@@ -1,0 +1,35 @@
+Lần lặp thứ 1: 
+Luật R1 được áp dụng, thêm vế phải gồm: D01 vào facts 
+Lần lặp thứ 1: 
+Luật R1 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R2 được áp dụng, thêm vế phải gồm: D02 vào facts 
+Lần lặp thứ 1: 
+Luật R1 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R2 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R3 không được áp dụng vì thiếu fact: S02
+Luật R4 không được áp dụng vì thiếu fact: S06
+Luật R5 không được áp dụng vì thiếu fact: S02
+Luật R6 được áp dụng, thêm vế phải gồm: S02 vào facts 
+Lần lặp thứ 1: 
+Luật R1 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R2 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R3 được áp dụng, thêm vế phải gồm: S03 vào facts 
+Lần lặp thứ 1: 
+Luật R1 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R2 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R3 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R4 không được áp dụng vì thiếu fact: S06
+Luật R5 được áp dụng, thêm vế phải gồm: S06 vào facts 
+Lần lặp thứ 1: 
+Luật R1 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R2 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R3 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R4 được áp dụng, thêm vế phải gồm: S07 vào facts 
+Lần lặp thứ 1: 
+Luật R1 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R2 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R3 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R4 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R5 không được áp dụng vì tất cả về phải đã có trong facts
+Luật R6 không được áp dụng vì tất cả về phải đã có trong facts
+Thuật toán kết thúc vì không thêm được luật mới vào facts

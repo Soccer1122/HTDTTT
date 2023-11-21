@@ -1,17 +1,19 @@
 package HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi;
 
+import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Controller.Controller;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Entity.*;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.BenhRepository;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.LuatRepository;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.SuyDienRepository;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.TrieuChungRepository;
+import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDien;
+import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDienLui;
+import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDienTien;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 @SpringBootApplication
@@ -27,54 +29,52 @@ public class TuVanBenhTreEm3Den10TuoiApplication {
 		List<Luat> luatList = luatRepository.findAll();
 		List<SuyDien> suyDienList = suyDienRepository.findAll();
 		List<TrieuChung> trieuChungList = trieuChungRepository.findAll();
-		List<LuatSuyDienTien> luatSuyDienTiens= initLuatSuyDienTien(luatList);
-		List<LuatSuyDienLui> luatSuyDienLuis = initLuatSuyDienLui(luatList);
+		List<LuatSuyDienTien> luatSuyDienTiens= Controller.initLuatSuyDienTien(luatList);
+		List<LuatSuyDienLui> luatSuyDienLuis = Controller.initLuatSuyDienLui(luatList);
+        List<TrieuChung> trieuChungEmBeMac = new ArrayList<>();
 		//
 		//
-		System.out.println("hello");
+        System.out.println();
+        System.out.println();
+		System.out.println("Chào bạn tôi là chatbot tư vấn cho bạn các bệnh liên quan đến đường hô hấp cho trả 3-10 tuổi. Hãy cho tôi biết tên của bạn ?");
 		Scanner sc = new Scanner(System.in);
-		int i = sc.nextInt();
-		System.out.println(luatSuyDienLuis);
+        System.out.print("Hãy nhập tên của bạn vào đây: ");
+		String name =sc.nextLine();
+		List<LuatSuyDien> rules = new ArrayList<>();
+		String [] traiR1 = {"S01"};
+		String [] phaiR1 = {"D01"};
+		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR1)),new ArrayList<>(Arrays.asList(phaiR1))));
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		String [] traiR2 = {"D01"};
+		String [] phaiR2 = {"D02"};
+		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR2)),new ArrayList<>(Arrays.asList(phaiR2))));
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		String [] traiR3 = {"S02"};
+		String [] phaiR3 = {"S03"};
+		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR3)),new ArrayList<>(Arrays.asList(phaiR3))));
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		String [] traiR4 = {"S06","S04"};
+		String [] phaiR4 = {"S07"};
+		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR4)),new ArrayList<>(Arrays.asList(phaiR4))));
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		String [] traiR5 = {"S05","S02"};
+		String [] phaiR5 = {"S06"};
+		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR5)),new ArrayList<>(Arrays.asList(phaiR5))));
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		String [] traiR6 = {"S01"};
+		String [] phaiR6 = {"S02"};
+		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR6)),new ArrayList<>(Arrays.asList(phaiR6))));
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		Set<String> facts = new HashSet<>();
+		facts.add("S01");
+		facts.add("S04");
+		facts.add("S05");
+		Controller.SuyDienTien(rules,facts);
 		shutdownApp(context);
 	}
 	// Các hàm sử dụng
 	private static void shutdownApp(ConfigurableApplicationContext context) {
 		int exitCode = SpringApplication.exit(context, () -> 0);
 		System.exit(exitCode);
-	}
-
-	private static List<LuatSuyDienTien> initLuatSuyDienTien( List<Luat> luatList){
-		List<LuatSuyDienTien> luatSuyDienTiens = new ArrayList<>();
-		for(Luat i : luatList){
-			if(i.isTrangThai()) {
-				LuatSuyDienTien luatSuyDienTien = new LuatSuyDienTien();
-				luatSuyDienTien.setId(i.getId());
-				luatSuyDienTien.setTrieuChung(i.getSuyDienList().get(0).getTrieuChung());
-				List<Benh> benhs = new ArrayList<>();
-				for (SuyDien y : i.getSuyDienList()) {
-					benhs.add(y.getBenh());
-				}
-				luatSuyDienTien.setBenhList(benhs);
-				luatSuyDienTiens.add(luatSuyDienTien);
-			}
-		}
-		return luatSuyDienTiens;
-	}
-	private static List<LuatSuyDienLui> initLuatSuyDienLui( List<Luat> luatList){
-		List<LuatSuyDienLui> luatSuyDienLuis = new ArrayList<>();
-		for(Luat i : luatList){
-			if(!i.isTrangThai()) {
-				LuatSuyDienLui luatSuyDienLui = new LuatSuyDienLui();
-				luatSuyDienLui.setId(i.getId());
-				luatSuyDienLui.setBenh(i.getSuyDienList().get(0).getBenh());
-				List<TrieuChung> trieuChungs = new ArrayList<>();
-				for (SuyDien y : i.getSuyDienList()) {
-					trieuChungs.add(y.getTrieuChung());
-				}
-				luatSuyDienLui.setTrieuChungList(trieuChungs);
-				luatSuyDienLuis.add(luatSuyDienLui);
-			}
-		}
-		return luatSuyDienLuis;
 	}
 }
