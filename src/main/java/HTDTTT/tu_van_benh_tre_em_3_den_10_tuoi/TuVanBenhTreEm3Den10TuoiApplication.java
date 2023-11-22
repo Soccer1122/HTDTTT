@@ -40,36 +40,7 @@ public class TuVanBenhTreEm3Den10TuoiApplication {
 		Scanner sc = new Scanner(System.in);
         System.out.print("Hãy nhập tên của bạn vào đây: ");
 		String name =sc.nextLine();
-		List<LuatSuyDien> rules = new ArrayList<>();
-		String [] traiR1 = {"S01"};
-		String [] phaiR1 = {"D01"};
-		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR1)),new ArrayList<>(Arrays.asList(phaiR1))));
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		String [] traiR2 = {"D01"};
-		String [] phaiR2 = {"D02"};
-		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR2)),new ArrayList<>(Arrays.asList(phaiR2))));
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		String [] traiR3 = {"S02"};
-		String [] phaiR3 = {"S03"};
-		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR3)),new ArrayList<>(Arrays.asList(phaiR3))));
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		String [] traiR4 = {"S06","S04"};
-		String [] phaiR4 = {"S07"};
-		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR4)),new ArrayList<>(Arrays.asList(phaiR4))));
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		String [] traiR5 = {"S05","S02"};
-		String [] phaiR5 = {"S06"};
-		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR5)),new ArrayList<>(Arrays.asList(phaiR5))));
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		String [] traiR6 = {"S01"};
-		String [] phaiR6 = {"S02"};
-		rules.add(new LuatSuyDien( new ArrayList<>(Arrays.asList(traiR6)),new ArrayList<>(Arrays.asList(phaiR6))));
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		Set<String> facts = new HashSet<>();
-		facts.add("S01");
-		facts.add("S04");
-		facts.add("S05");
-		Controller.SuyDienTien(rules,facts);
+		trieuChungEmBeMac =Controller.HoiTruocSuyDien(trieuChungList,name,sc);
 		shutdownApp(context);
 	}
 	// Các hàm sử dụng
