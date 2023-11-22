@@ -6,7 +6,6 @@ import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.BenhRepository;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.LuatRepository;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.SuyDienRepository;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.Repository.TrieuChungRepository;
-import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDien;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDienLui;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDienTien;
 import org.springframework.boot.SpringApplication;
@@ -32,15 +31,24 @@ public class TuVanBenhTreEm3Den10TuoiApplication {
 		List<LuatSuyDienTien> luatSuyDienTiens= Controller.initLuatSuyDienTien(luatList);
 		List<LuatSuyDienLui> luatSuyDienLuis = Controller.initLuatSuyDienLui(luatList);
         List<TrieuChung> trieuChungEmBeMac = new ArrayList<>();
-		//
-		//
+		List<Benh> benhDuDoan = new ArrayList<>();
+		List<Benh> benhDaMac= new ArrayList<>();
+		//Thuc hien chuan doan
+		//B1: Hoi ten nguoi dung
         System.out.println();
         System.out.println();
 		System.out.println("Chào bạn tôi là chatbot tư vấn cho bạn các bệnh liên quan đến đường hô hấp cho trả 3-10 tuổi. Hãy cho tôi biết tên của bạn ?");
 		Scanner sc = new Scanner(System.in);
         System.out.print("Hãy nhập tên của bạn vào đây: ");
 		String name =sc.nextLine();
-		trieuChungEmBeMac =Controller.HoiTruocSuyDien(trieuChungList,name,sc);
+		//B2: Hoi truoc suy dien de lay ra trieu chung dang bi
+		trieuChungEmBeMac = Controller.hoiTruocSuyDien(trieuChungList,name,sc);
+		//B3: Suy dien tien de chuan doan ra cac benh co the bi mac
+		benhDuDoan = Controller.suDungSuyDienTien(luatSuyDienTiens,trieuChungEmBeMac,benhRepository);
+		//B4: Su dung suy dien lui de chuan doan ra benh mac phai
+		benhDaMac = Controller.suDungSuyDienLui(luatSuyDienLuis,benhDuDoan,trieuChungEmBeMac,sc);
+		Controller.inKetQuaDuDoan(benhDaMac);
+		///////////////////////////////////////ket thuc chuong trinh
 		shutdownApp(context);
 	}
 	// Các hàm sử dụng

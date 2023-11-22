@@ -7,6 +7,7 @@ import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDienLui;
 import HTDTTT.tu_van_benh_tre_em_3_den_10_tuoi.subClass.LuatSuyDienTien;
 
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 
@@ -48,8 +49,18 @@ public class Controller {
         return luatSuyDienLuis;
     }
     ///////////////////////////////////////////////////////////////////////////
+    private static Set<TrieuChung> getTrieuChungCuaMotBenh(String idBenh , List<LuatSuyDienLui> luatSuyDienLuis){
+        Set<TrieuChung> trieuChungs = new HashSet<>();
+        for (LuatSuyDienLui i : luatSuyDienLuis){
+            if(i.getBenh().getId().trim().equalsIgnoreCase(idBenh.trim())){
+                trieuChungs.addAll(i.getTrieuChungList());
+            }
+        }
+        return trieuChungs;
+    }
+    ///////////////////////////////////////////////////////////////////////////
 
-    private static Set<String> SuyDienTien(List<LuatSuyDien> rules, Set<String> facts){
+    private static Set<String> suyDienTien(List<LuatSuyDien> rules, Set<String> facts){
         int currentLengthOfFaces = 0;
         int afterLengthOfFaces = 0;
 
@@ -64,12 +75,67 @@ public class Controller {
                 }
             }
             afterLengthOfFaces = facts.size();
-            System.out.println(afterLengthOfFaces+" "+currentLengthOfFaces);
         }while (afterLengthOfFaces>currentLengthOfFaces);
         return facts;
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private static boolean suyDienLuiDungDeChuanDoanBenh(List<LuatSuyDienLui> luatSuyDienLuis, Benh benhDuDoan, List<TrieuChung> trieuChung){
+        List<LuatSuyDien> luatSuyDiens = new ArrayList<>();
+        Set<String> facts = new HashSet<>();
+        Stack<String> goal = new Stack<>();
+        goal.push(benhDuDoan.getId());
+        for(LuatSuyDienLui i : luatSuyDienLuis){
+            List<String> vePhai =new ArrayList<>();
+            vePhai.add(i.getBenh().getId());
+            List<String> veTrai =new ArrayList<>();
+            for (TrieuChung j : i.getTrieuChungList()){
+                veTrai.add(j.getId());
+            }
+            luatSuyDiens.add(new LuatSuyDien(veTrai,vePhai));
+        }
+        for(TrieuChung i : trieuChung){
+            facts.add(i.getId());
+        }
+        return suyDienLui(luatSuyDiens,facts,goal,new Stack<>());
+    }
+    ///////////////////////////////////////////////////////////////////////////
+    private static boolean suyDienLui(List<LuatSuyDien> rules, Set<String> facts, Stack<String> goal , Stack<String> isCheck){
+        while (true){
+            int check = 0;
+            if(facts.contains(goal.peek())){
+                System.out.println("facts có chứa goal: "+goal.peek());
+                goal.pop();
+                System.out.println("goal hiện tại: "+goal);
+                check=1;
+            }
+            if(goal.isEmpty()){
+                System.out.println("Các goal đã được chứng minh kết thúc bài toán");
+                return true;
+            }
+            for(LuatSuyDien i : rules){
+                if(i.getVePhai().contains(goal.peek())&& isCheck.search(goal.peek())==-1){
+                    System.out.println("Tìm thấy goal ở vế phải luật thứ: " + (rules.indexOf(i)+1) );
+                    System.out.print("Thêm các phần tử ở vế trái vào goal: ");
+                    isCheck.push(goal.peek());
+                    goal.pop();
+                    for (String y : i.getVeTrai()){
+                        System.out.print(y+" ");
+                        goal.push(y);
+                    }
+                    System.out.println("goal hiện tại: "+goal);
+                    check=1;
+                    break;
+                }
+            }
+            if (check==0){
+                System.out.println("Không thể chứng minh được goal: "+goal.peek());
+                return false;
+            }
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////
 
-    public static List<TrieuChung> HoiTruocSuyDien(List<TrieuChung> trieuChungs , String name, Scanner sc){
+    public static List<TrieuChung> hoiTruocSuyDien(List<TrieuChung> trieuChungs , String name, Scanner sc){
         List<TrieuChung> trieuChungEmBeGap = new ArrayList<>();
         List<TrieuChung> trieuChungHoi = new ArrayList<>();
         trieuChungHoi.add(new TrieuChung("S40","Sốt"));
@@ -127,12 +193,13 @@ public class Controller {
             }
     return trieuChungEmBeGap;
     }
-    public static List<Benh> SuDungSuyDienTien ( List<LuatSuyDienTien> luatSuyDienTiens, List<TrieuChung> trieuChungs,BenhRepository benhRepository){
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static List<Benh> suDungSuyDienTien ( List<LuatSuyDienTien> luatSuyDienTiens, List<TrieuChung> trieuChungs,BenhRepository benhRepository){
         List<LuatSuyDien> luatSuyDiens = new ArrayList<>();
         Set<String> facts = new HashSet<>();
         for(LuatSuyDienTien i : luatSuyDienTiens){
             List<String> veTrai =new ArrayList<>();
-            veTrai.add(i.getTrieuChung().getTrieuChung());
+            veTrai.add(i.getTrieuChung().getId());
             List<String> vePhai =new ArrayList<>();
             for (Benh j : i.getBenhList()){
                 vePhai.add(j.getId());
@@ -142,8 +209,60 @@ public class Controller {
         for(TrieuChung i : trieuChungs){
             facts.add(i.getId());
         }
-        Set<String> idBenhs = SuyDienTien(luatSuyDiens,facts);
+        Set<String> idBenhs = suyDienTien(luatSuyDiens,facts);
         List<Benh> benhs = benhRepository.findAllById(idBenhs);
         return benhs;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static List<Benh> suDungSuyDienLui(List<LuatSuyDienLui> luatSuyDienLuis, List<Benh> benhDuDoan, List<TrieuChung> trieuChungDaMac,Scanner sc ){
+        List<Benh> benhDaMac = new ArrayList<>();
+        System.out.print("-->Hệ thống: Có thể bé đang mắc các bệnh sau: ");
+        for(Benh i : benhDuDoan){
+            System.out.print(i.getTenBenh()+" ");
+        }
+        System.out.println();
+        System.out.println("-->Hệ thống: Chúng tôi cần hỏi bạn một số câu hỏi để có được chuẩn đoán chính xác nhất");
+        List<TrieuChung> trieuChungDaHoiNhungKhongMac = new ArrayList<>();
+        for(Benh i : benhDuDoan){
+            Set<TrieuChung> trieuChungCuaMotBenh = getTrieuChungCuaMotBenh(i.getId(),luatSuyDienLuis);
+            for (TrieuChung y : trieuChungCuaMotBenh){
+                if(!trieuChungDaMac.contains(y) && !trieuChungDaHoiNhungKhongMac.contains(y)){
+                    System.out.println("-->Hệ thống: Bé có bị "+y.getTrieuChung()+" không?\n1.Có\n2.Không");
+                    String answer = sc.nextLine().trim();
+                    if(answer.equals("1")||answer.equals("2")){
+                        if(answer.equals("1")){
+                            trieuChungDaMac.add(y);
+                        }else {
+                            trieuChungDaHoiNhungKhongMac.add(y);
+                        }
+                    }
+                    else {
+                        System.out.println("-->Hệ thống: Bạn vui lòng chỉ nhập 1 hoặc 2");
+                    }
+                }
+            }
+            if(suyDienLuiDungDeChuanDoanBenh(luatSuyDienLuis,i,trieuChungDaMac)){
+                benhDaMac.add(i);
+            }
+        }
+        return benhDaMac;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void inKetQuaDuDoan(List<Benh> benhDaMac){
+        if(benhDaMac.isEmpty()){
+            System.out.println("-->Hệ thống: Chúc mừng bạn chúng tôi chuẩn đoán bé nhà bạn hoàn toàn khỏe mạnh.\nChúc bé luôn luôn khỏe mạnh và cảm ơn bạn đã sử dụng hệ thống của chúng tôi ");
+        }
+        else{
+            System.out.println("-->Hệ thống: Chúng tôi chuẩn đoán bé đã mắc bệnh sau: ");
+            for(Benh i : benhDaMac){
+                System.out.println("\t"+(benhDaMac.indexOf(i)+1)+". "+i.getTenBenh().trim());
+                System.out.println("\t\t-Nguyên nhân có thể do: ");
+                List<String> nguyenNhan= List.of(i.getNguyenNhan().split("-"));
+                for(String y :nguyenNhan){
+                    System.out.println("\t\t\t+ "+y.trim());
+                }
+            }
+            System.out.println("-->Hệ thống: Cảm ơn bạn đã sử dụng hệ thống của chúng tôi ");
+        }
     }
 }
