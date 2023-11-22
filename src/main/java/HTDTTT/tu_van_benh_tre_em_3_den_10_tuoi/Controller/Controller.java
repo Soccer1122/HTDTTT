@@ -103,32 +103,24 @@ public class Controller {
         while (true){
             int check = 0;
             if(facts.contains(goal.peek())){
-                System.out.println("facts có chứa goal: "+goal.peek());
                 goal.pop();
-                System.out.println("goal hiện tại: "+goal);
                 check=1;
             }
             if(goal.isEmpty()){
-                System.out.println("Các goal đã được chứng minh kết thúc bài toán");
                 return true;
             }
             for(LuatSuyDien i : rules){
                 if(i.getVePhai().contains(goal.peek())&& isCheck.search(goal.peek())==-1){
-                    System.out.println("Tìm thấy goal ở vế phải luật thứ: " + (rules.indexOf(i)+1) );
-                    System.out.print("Thêm các phần tử ở vế trái vào goal: ");
                     isCheck.push(goal.peek());
                     goal.pop();
                     for (String y : i.getVeTrai()){
-                        System.out.print(y+" ");
                         goal.push(y);
                     }
-                    System.out.println("goal hiện tại: "+goal);
                     check=1;
                     break;
                 }
             }
             if (check==0){
-                System.out.println("Không thể chứng minh được goal: "+goal.peek());
                 return false;
             }
         }
@@ -146,50 +138,91 @@ public class Controller {
                 if (trieuChungEmBeGap.size() == 4) {
                     break;
                 }
-
                 if (trieuChungEmBeGap.isEmpty()) {
                     System.out.println("-->Hệ thống: Bé nhà " + name + " có triệu chứng nào ở dưới đây không (Nhập số thứ tự của triệu chứng để chọn. Có thể lựa chọn nhiều)");
                 } else {
                     System.out.println("-->Hệ thống: Bé nhà " + name + " có triệu chứng nào nữa ở dưới đây không (Nhập số thứ tự của triệu chứng để chọn. Có thể lựa chọn nhiều)");
                 }
 
-                int count = 1;
+                int count = -1;
                 for (TrieuChung i : trieuChungHoi) {
                     if (!trieuChungEmBeGap.contains(i)) {
-                        System.out.println(count + ". " + i.getTrieuChung() + "\n");
+                        System.out.println("\t"+(count+2) + ". " + i.getTrieuChung() + "\n");
                     }
                     count++;
                 }
 
-                System.out.println("0. Tôi không có triệu chứng nào ở trên\n -------------Câu trả lời của bạn--------------");
+                System.out.println("\t0. Con tôi không có triệu chứng nào ở trên\n -------------Câu trả lời của bạn--------------");
                 System.out.print("-->" + name + ": Câu trả lời của tôi là: " );
                 try{
                     String answer = sc.nextLine().trim();
                     if (answer.equals("0")) {
                         break;
-                    } else if(Integer.parseInt(answer)>0 &&Integer.parseInt(answer)<=count){
+                    } else if(Integer.parseInt(answer)>0 &&Integer.parseInt(answer)<=count+2){
                         if(answer.equals("1") && !trieuChungEmBeGap.contains(trieuChungs.get(0)) && !trieuChungEmBeGap.contains(trieuChungs.get(1))){
-                            trieuChungEmBeGap.add(trieuChungs.get(0));
+                            System.out.println("-->Hệ thống: Tôi muốn biết thêm về tình trạng sốt của bé nên bạn hãy trả lời câu hỏi sau: \n" +
+                                    "\t\tTình trạng sốt của bé như thế nào?");
+                            System.out.println("\t1. Sốt cao kéo dài, sốt đột ngột");
+                            System.out.println("\t2. Sốt nhẹ");
+                            while (true){
+                                try{
+                                    String answer1 = sc.nextLine().trim();
+                                    if(answer1.equals("1")){
+                                        trieuChungEmBeGap.add(trieuChungs.get(0));
+                                        break;
+                                    }else if(answer1.equals("2")){
+                                        trieuChungEmBeGap.add(trieuChungs.get(0));
+                                        break;
+                                    }else {
+                                        System.out.println("-->Hệ thống: Vui lòng chỉ nhập 1 hoặc 2");
+                                    }
+                                }catch (Exception e){
+                                    System.out.println("-->Hệ thống: Vui lòng chỉ nhập 1 hoặc 2");
+                                }
+                            }
                             trieuChungHoi.remove(0);
                         }else if(answer.equals("1") && !trieuChungEmBeGap.contains(trieuChungs.get(2)) && !trieuChungEmBeGap.contains(trieuChungs.get(3)) && (trieuChungEmBeGap.contains(trieuChungs.get(0)) || trieuChungEmBeGap.contains(trieuChungs.get(1)))){
-                            trieuChungEmBeGap.add(trieuChungs.get(2));
+                            System.out.println("-->Hệ thống: Tôi muốn biết thêm về tình trạng ho của bé nên bạn hãy trả lời câu hỏi sau: \n" +
+                                    "\t\tTình trạng sốt của bé như thế nào?");
+                            System.out.println("\t1. Ho kéo dài, lâu ngày, ho nhiều về đêm");
+                            System.out.println("\t2. Ho khan hay ho có đờm");
+                            while (true){
+                                try{
+                                    String answer1 = sc.nextLine().trim();
+                                    if(answer1.equals("1")){
+                                        trieuChungEmBeGap.add(trieuChungs.get(2));
+                                        break;
+                                    }else if(answer1.equals("2")){
+                                        trieuChungEmBeGap.add(trieuChungs.get(3));
+                                        break;
+                                    }else {
+                                        System.out.println("-->Hệ thống: Vui lòng chỉ nhập 1 hoặc 2");
+                                    }
+                                }catch (Exception e){
+                                    System.out.println("-->Hệ thống: Vui lòng chỉ nhập 1 hoặc 2");
+                                }
+                            }
                             trieuChungHoi.remove(0);
                         }else if((answer.equals("2") && !trieuChungEmBeGap.contains(trieuChungs.get(0)) && !trieuChungEmBeGap.contains(trieuChungs.get(1)) && !trieuChungEmBeGap.contains(trieuChungs.get(2)) && !trieuChungEmBeGap.contains(trieuChungs.get(3)))){
                             trieuChungEmBeGap.add(trieuChungs.get(2));
                             trieuChungHoi.remove(1);
                         }else {
-                            System.out.println("Chon nhu bth");
                             trieuChungEmBeGap.add(trieuChungHoi.get(Integer.parseInt(answer)-1));
+                            trieuChungHoi.remove(Integer.parseInt(answer)-1);
                         }
                     }else{
-                        System.out.println("-->Hệ thống: Vui lòng nhập 1 số từ 0 tới "+count+1);
+                        System.out.println("-->Hệ thống: Vui lòng nhập 1 số từ 0 tới "+(count+1));
                         continue;
                     }
                 }catch (Exception e){
-                    System.out.println("-->Hệ thống: Vui lòng nhập 1 số từ 0 tới "+count+1);
+                    System.out.println("-->Hệ thống: Vui lòng nhập 1 số từ 0 tới "+(count+1));
                 }
-                System.out.print("-->Hệ thống: Danh sách mã các triệu chứng bé đang mắc: ");
-                System.out.println(trieuChungEmBeGap);
+                System.out.print("-->Hệ thống: Bé đang có các triệu chứng: ");
+                for(TrieuChung i : trieuChungEmBeGap){
+                    String output = i.getTrieuChung()+", ";
+                    System.out.print(output.substring(0,output.length()-2));
+                }
+                System.out.println();
             }
     return trieuChungEmBeGap;
     }
@@ -214,11 +247,12 @@ public class Controller {
         return benhs;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static List<Benh> suDungSuyDienLui(List<LuatSuyDienLui> luatSuyDienLuis, List<Benh> benhDuDoan, List<TrieuChung> trieuChungDaMac,Scanner sc ){
+    public static List<Benh> suDungSuyDienLui(List<LuatSuyDienLui> luatSuyDienLuis, List<Benh> benhDuDoan, List<TrieuChung> trieuChungDaMac,Scanner sc,String name ){
         List<Benh> benhDaMac = new ArrayList<>();
         System.out.print("-->Hệ thống: Có thể bé đang mắc các bệnh sau: ");
         for(Benh i : benhDuDoan){
-            System.out.print(i.getTenBenh()+" ");
+            String output = i.getTenBenh()+", ";
+            System.out.print(output.substring(0,output.length()-2));
         }
         System.out.println();
         System.out.println("-->Hệ thống: Chúng tôi cần hỏi bạn một số câu hỏi để có được chuẩn đoán chính xác nhất");
@@ -227,17 +261,21 @@ public class Controller {
             Set<TrieuChung> trieuChungCuaMotBenh = getTrieuChungCuaMotBenh(i.getId(),luatSuyDienLuis);
             for (TrieuChung y : trieuChungCuaMotBenh){
                 if(!trieuChungDaMac.contains(y) && !trieuChungDaHoiNhungKhongMac.contains(y)){
-                    System.out.println("-->Hệ thống: Bé có bị "+y.getTrieuChung()+" không?\n1.Có\n2.Không");
-                    String answer = sc.nextLine().trim();
-                    if(answer.equals("1")||answer.equals("2")){
-                        if(answer.equals("1")){
-                            trieuChungDaMac.add(y);
-                        }else {
-                            trieuChungDaHoiNhungKhongMac.add(y);
+                    while (true) {
+                        System.out.println("-->Hệ thống: Bé có bị " + y.getTrieuChung() + " không?\n\t1.Có\n\t2.Không");
+                        System.out.println("-------------Câu trả lời của bạn--------------");
+                        System.out.print("-->" + name + ": Câu trả lời của tôi là: ");
+                        String answer = sc.nextLine().trim();
+                        if (answer.equals("1") || answer.equals("2")) {
+                            if (answer.equals("1")) {
+                                trieuChungDaMac.add(y);
+                            } else {
+                                trieuChungDaHoiNhungKhongMac.add(y);
+                            }
+                            break;
+                        } else {
+                            System.out.println("-->Hệ thống: Bạn vui lòng chỉ nhập 1 hoặc 2");
                         }
-                    }
-                    else {
-                        System.out.println("-->Hệ thống: Bạn vui lòng chỉ nhập 1 hoặc 2");
                     }
                 }
             }
@@ -250,7 +288,7 @@ public class Controller {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static void inKetQuaDuDoan(List<Benh> benhDaMac){
         if(benhDaMac.isEmpty()){
-            System.out.println("-->Hệ thống: Chúc mừng bạn chúng tôi chuẩn đoán bé nhà bạn hoàn toàn khỏe mạnh.\nChúc bé luôn luôn khỏe mạnh và cảm ơn bạn đã sử dụng hệ thống của chúng tôi ");
+            System.out.println("-->Hệ thống: Chúc mừng bạn chúng tôi chuẩn đoán bé nhà bạn hoàn toàn khỏe mạnh.\nChúc bé luôn luôn khỏe mạnh và cảm ơn bạn đã sử dụng hệ thống của chúng tôi!!!");
         }
         else{
             System.out.println("-->Hệ thống: Chúng tôi chuẩn đoán bé đã mắc bệnh sau: ");
@@ -262,7 +300,7 @@ public class Controller {
                     System.out.println("\t\t\t+ "+y.trim());
                 }
             }
-            System.out.println("-->Hệ thống: Cảm ơn bạn đã sử dụng hệ thống của chúng tôi ");
+            System.out.println("-->Hệ thống: Cảm ơn bạn đã sử dụng hệ thống của chúng tôi!!! ");
         }
     }
 }

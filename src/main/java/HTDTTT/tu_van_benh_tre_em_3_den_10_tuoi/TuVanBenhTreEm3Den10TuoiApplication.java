@@ -43,10 +43,15 @@ public class TuVanBenhTreEm3Den10TuoiApplication {
 		String name =sc.nextLine();
 		//B2: Hoi truoc suy dien de lay ra trieu chung dang bi
 		trieuChungEmBeMac = Controller.hoiTruocSuyDien(trieuChungList,name,sc);
+		if(trieuChungEmBeMac.isEmpty()){//Neu nguoi dung khong chon trieu chung nao thi ket thuc luon
+			System.out.println("Có vẻ như bé nhà "+name+" không gặp vấn đề gì. Cảm ơn bạn đã sử dụng hệ thống của chúng tôi!!!!");
+			shutdownApp(context);
+		}
 		//B3: Suy dien tien de chuan doan ra cac benh co the bi mac
 		benhDuDoan = Controller.suDungSuyDienTien(luatSuyDienTiens,trieuChungEmBeMac,benhRepository);
 		//B4: Su dung suy dien lui de chuan doan ra benh mac phai
-		benhDaMac = Controller.suDungSuyDienLui(luatSuyDienLuis,benhDuDoan,trieuChungEmBeMac,sc);
+		benhDaMac = Controller.suDungSuyDienLui(luatSuyDienLuis,benhDuDoan,trieuChungEmBeMac,sc,name);
+		//B5: In ra chuan doan cho nguoi dung
 		Controller.inKetQuaDuDoan(benhDaMac);
 		///////////////////////////////////////ket thuc chuong trinh
 		shutdownApp(context);
